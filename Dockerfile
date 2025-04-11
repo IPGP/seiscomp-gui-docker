@@ -122,14 +122,24 @@ RUN rm -rf gsm/sync \
 
 ## Install SeisComP deps and database
 RUN sed -i 's;apt;apt -y;' $INSTALL_DIR/share/deps/*/*/install-*.sh \
-    && $INSTALL_DIR/bin/seiscomp install-deps base gui
+    && $INSTALL_DIR/bin/seiscomp install-deps base gui fdsnws
+
+# SeisComP Maps
+RUN wget https://www.seiscomp.de/downloader/seiscomp-maps.tar.gz \
+    && tar xzf seiscomp-maps.tar.gz -C /opt/
+
+## SeisComP configuration
+RUN $INSTALL_DIR/bin/seiscomp print env >> /home/sysop/.profile
+
+COPY seiscomp/etc/* $INSTALL_DIR/etc/
 
 # Start sshd in foreground - useful for "detached" mode
 CMD sudo /usr/sbin/sshd -D
 
 ## Build :
-# docker build -t seiscomp-version6 .
-## Lancer le conteneur et obtenir un shell :
-# docker run --rm -it seiscomp-version6
+# docker build -t seiscomp-version6:latest .
 ## Lancer le conteneur en arrière plan
-# docker run -d --name -p 2222:22 scolv seiscomp-version6
+# docker run -d -p 2222:22 \
+#            -v /HOST/PATH/TO/seiscomp/share/nll:/INSTALL_DIR/share/nll \
+#            -v /HOST/PATH/TO/seiscomp/share/maps/OCMap:/INSTALL_DIR/share/maps/OCMap \
+#            --name scolv seiscomp-version6:latest

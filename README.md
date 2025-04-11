@@ -33,7 +33,10 @@ Docker Desktop can use Rosetta 2 to emulate x86_64 images on Apple Silicon Macs.
 ### Start container
 
 ```bash
-docker run -d -p 2222:22 --name mon_conteneur seiscomp-version6:latest
+docker run -d -p 2222:22 \
+           -v /HOST/PATH/TO/seiscomp/share/nll:/INSTALL_DIR/share/nll \
+           -v /HOST/PATH/TO/seiscomp/share/maps/OCMap:/INSTALL_DIR/share/maps/OCMap \
+           --name scolv seiscomp-version6:latestdocker run -d -p 2222:22 --name mon_conteneur seiscomp-version6:latest
 ```
 
 ### Connect to container with SSH
