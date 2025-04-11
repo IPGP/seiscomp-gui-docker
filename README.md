@@ -36,4 +36,4 @@ docker run -d --name scolv -p 2222:22 seiscomp-version6:latest
 
 ## Credits
 
-Ce projet a été inspiré par [Fred Massin](https://github.com/FMassin). Many thanks!!
+This project was inspired by [Fred Massin](https://github.com/FMassin). Many thanks!!
