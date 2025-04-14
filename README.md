@@ -73,7 +73,7 @@ ssh -Y -p 2222 sysop@localhost
 ### Start scolv
 
 ```bash
-ssh -Y -p 2222 sysop@localhost
+scolv
 ```
 
 ## Credits
