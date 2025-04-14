@@ -3,6 +3,10 @@ SeisComP scolv GUI utility in a docker container
 
 ## Mac install
 
+### XQuartz install
+
+Install the latest version of XQuartz from : https://www.xquartz.org/
+
 ### Homebrew install
 
 ```bash
