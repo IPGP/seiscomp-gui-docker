@@ -139,8 +139,7 @@ RUN $INSTALL_DIR/bin/seiscomp print env >> /home/sysop/.profile
 # Copy user-defined configuration files
 COPY ./seiscomp/etc/* $INSTALL_DIR/etc/
 RUN find $INSTALL_DIR/etc/ -type f -name "*.cfg" -print0 | xargs -0 sudo chmod 644 \
-    && find $INSTALL_DIR/etc/ -type f -name "*.cfg" -print0 | xargs -0 sudo chown sysop:sysop \
-    && sudo rm $INSTALL_DIR/etc/README
+    && find $INSTALL_DIR/etc/ -type f -name "*.cfg" -print0 | xargs -0 sudo chown sysop:sysop
 
 # Start sshd in foreground - useful for "detached" mode
 CMD sudo /usr/sbin/sshd -D
