@@ -22,7 +22,7 @@ brew install docker-buildx
 
 Start Docker Desktop (Applications folder) : it will start the docker daemon.
 
-## Running Docker container
+## Building and running Docker container
 
 ### Build Docker image
 

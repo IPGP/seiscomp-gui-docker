@@ -21,6 +21,8 @@ ENV FAKE_CHROOT=1
 # Setup sysop's user and group id
 ENV USER_ID=1000
 ENV GROUP_ID=1000
+# Ensures that the OpenGL graphics library will not try to direct access GPU in the container
+ENV LIBGL_ALWAYS_INDIRECT=1
 
 WORKDIR $WORK_DIR
 
@@ -47,6 +49,9 @@ RUN echo 'force-unsafe-io' | tee /etc/dpkg/dpkg.cfg.d/02apt-speedup \
         vim \
         git \
         pipx \
+        # Useful for X11 forwarding
+        mesa-utils \
+        libgl1-mesa-glx \
     # Install GSM dependencies
     && pip install \
         configparser \
@@ -131,7 +136,11 @@ RUN wget https://www.seiscomp.de/downloader/seiscomp-maps.tar.gz \
 ## SeisComP configuration
 RUN $INSTALL_DIR/bin/seiscomp print env >> /home/sysop/.profile
 
-COPY seiscomp/etc/* $INSTALL_DIR/etc/
+# Copy user-defined configuration files
+COPY ./seiscomp/etc/* $INSTALL_DIR/etc/
+RUN find $INSTALL_DIR/etc/ -type f -name "*.cfg" -print0 | xargs -0 sudo chmod 644 \
+    && find $INSTALL_DIR/etc/ -type f -name "*.cfg" -print0 | xargs -0 sudo chown sysop:sysop \
+    && sudo rm $INSTALL_DIR/etc/README
 
 # Start sshd in foreground - useful for "detached" mode
 CMD sudo /usr/sbin/sshd -D
