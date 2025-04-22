@@ -2,15 +2,14 @@ FROM debian:12-slim
 
 LABEL org.opencontainers.image.authors="boissier@ipgp.fr"
 LABEL version="1.0"
-LABEL description="Docker image running SeisComP version 6 \
-on Debian 12."
+LABEL description="Docker image running SeisComP version 6 on Debian 12."
 
 ## Environment variables
 
 # Directories
 ENV WORK_DIR=/home/sysop/
 ENV INSTALL_DIR=/opt/seiscomp
-ENV LOG_DIR=/home/sysop/.seiscomp
+ENV CFG_LOG_DIR=/home/sysop/.seiscomp
 ENV DATA_DIR=/opt/data
 # Set system to non-interactive during build only
 ARG DEBIAN_FRONTEND=noninteractive
@@ -28,13 +27,7 @@ WORKDIR $WORK_DIR
 
 ## System upgrade and packages install
 
-# Configure dpkg to use unsafe I/O operations in order 
-# to improve package installation and update performance.
-RUN echo 'force-unsafe-io' | tee /etc/dpkg/dpkg.cfg.d/02apt-speedup \
-    # Configure apt to automatically delete downloaded package files after each installation or update operation
-    && echo 'DPkg::Post-Invoke {"/bin/rm -f /var/cache/apt/archives/*.deb || true";};' | tee /etc/apt/apt.conf.d/no-cache \
-    # System upgrade
-    && apt-get update \
+RUN apt-get update \
     && apt-get dist-upgrade -y --no-install-recommends \
     # Install generic tools
     && apt-get install -y \
@@ -51,9 +44,9 @@ RUN echo 'force-unsafe-io' | tee /etc/dpkg/dpkg.cfg.d/02apt-speedup \
         pipx \
         # Useful for X11 forwarding
         mesa-utils \
-        libgl1-mesa-glx \
+        libgl1-mesa-glx
     # Install GSM dependencies
-    && pip install \
+RUN pip install \
         configparser \
         cryptography \
         humanize \
@@ -103,7 +96,7 @@ RUN groupadd --gid $GROUP_ID -r sysop \
 
 ## Directories
 
-RUN mkdir -p $LOG_DIR \
+RUN mkdir -p $CFG_LOG_DIR \
     && chown -R sysop:sysop /home/sysop \
     && mkdir -p $INSTALL_DIR \
     && chown -R sysop:sysop $INSTALL_DIR \
@@ -127,19 +120,17 @@ RUN rm -rf gsm/sync \
 
 ## Install SeisComP deps and database
 RUN sed -i 's;apt;apt -y;' $INSTALL_DIR/share/deps/*/*/install-*.sh \
-    && $INSTALL_DIR/bin/seiscomp install-deps base gui fdsnws
-
-# SeisComP Maps
-RUN wget https://www.seiscomp.de/downloader/seiscomp-maps.tar.gz \
-    && tar xzf seiscomp-maps.tar.gz -C /opt/
+    && $INSTALL_DIR/bin/seiscomp install-deps base gui
 
 ## SeisComP configuration
 RUN $INSTALL_DIR/bin/seiscomp print env >> /home/sysop/.profile
 
+## TODO : monter le volume local de conf et log vers .seiscomp 
+
 # Copy user-defined configuration files
-COPY ./seiscomp/etc/* $INSTALL_DIR/etc/
-RUN find $INSTALL_DIR/etc/ -type f -name "*.cfg" -print0 | xargs -0 sudo chmod 644 \
-    && find $INSTALL_DIR/etc/ -type f -name "*.cfg" -print0 | xargs -0 sudo chown sysop:sysop
+#COPY ./seiscomp/etc/* $INSTALL_DIR/etc/
+#RUN find $INSTALL_DIR/etc/ -type f -name "*.cfg" -print0 | xargs -0 sudo chmod 644 \
+#    && find $INSTALL_DIR/etc/ -type f -name "*.cfg" -print0 | xargs -0 sudo chown sysop:sysop
 
 # Start sshd in foreground - useful for "detached" mode
 CMD sudo /usr/sbin/sshd -D
@@ -150,4 +141,5 @@ CMD sudo /usr/sbin/sshd -D
 # docker run -d -p 2222:22 \
 #            -v /HOST/PATH/TO/seiscomp/share/nll:/INSTALL_DIR/share/nll \
 #            -v /HOST/PATH/TO/seiscomp/share/maps/OCMap:/INSTALL_DIR/share/maps/OCMap \
+#            -v /HOST/PATH/TO/.seiscomp/:/HOME/.seiscomp \
 #            --name scolv seiscomp-version6:latest
