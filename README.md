@@ -66,6 +66,7 @@ You can place any folder in ./seiscomp/ and mount it on the container. For examp
 docker run -d -p 2222:22 \
            -v /HOST/PATH/TO/seiscomp/share/nll:/opt/seiscomp/share/nll \
            -v /HOST/PATH/TO/seiscomp/share/maps/OCMap:/opt/seiscomp/share/maps/OCMap \
+           -v /HOST/PATH/TO/seiscomp/etc:/home/sysop/.seiscomp \
            --name scolv seiscomp-version6:latest
 ```
 
