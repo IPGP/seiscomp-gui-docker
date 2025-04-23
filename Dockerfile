@@ -36,30 +36,22 @@ RUN apt-get update \
         libssl-dev \
         net-tools \
         python3 \
-        python3-pip \
+        libpython3.11 \
         sudo \
         wget \
         vim \
         git \
-        pipx \
+        # Gempa gsm dependencies
+        python3-cryptography \
+        python3-requests \
+        python3-tqdm \
+        python3-natsort \
+        python3-humanize \
+        python3-gnupg \
+        python3-bs4 \
         # Useful for X11 forwarding
         mesa-utils \
-        libgl1-mesa-glx
-    # Install GSM dependencies
-RUN pip install \
-        configparser \
-        cryptography \
-        humanize \
-        natsort \
-        python-dateutil \
-        pytz \
-        requests \
-        tqdm \
-        tzlocal \
-        urllib3 \
-        bs4 \
-        gnupg \
-        --break-system-packages \
+        libgl1-mesa-glx \
     # Cleanup
     && apt-get autoremove -y --purge \
     && apt-get clean 
@@ -111,18 +103,20 @@ USER sysop
 RUN wget https://data.gempa.de/gsm/gempa-gsm.tar.gz \
     && tar xvfz gempa-gsm.tar.gz 
 
-COPY gsm/gsmsetup gsm/
+COPY gsm/gsm.conf gsm/
 
 ## Install SeisComP
 RUN rm -rf gsm/sync \
     && cd gsm \
-    && bash ./gsmsetup 
+    && bash ./gsm migrate \
+    && bash ./gsm update \
+    && bash ./gsm install seiscomp -y
 
-## Install SeisComP deps and database
+## Install SeisComP deps
 RUN sed -i 's;apt;apt -y;' $INSTALL_DIR/share/deps/*/*/install-*.sh \
     && $INSTALL_DIR/bin/seiscomp install-deps base gui
 
-## SeisComP configuration
+## SeisComP environment configuration
 RUN $INSTALL_DIR/bin/seiscomp print env >> /home/sysop/.profile
 
 ## TODO : monter le volume local de conf et log vers .seiscomp 
