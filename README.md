@@ -1,4 +1,4 @@
-# scolv-docker
+# seiscomp-gui-docker
 SeisComP scolv GUI utility in a docker container
 
 ## Mac install
@@ -58,9 +58,7 @@ docker run -d -p 2222:22 --name scolv seiscomp-version6:latest
 
 #### Pre-configured environment
 
-You can place custom SeisComP configuration files in ./seiscomp/etc/
-
-You can place any folder in ./seiscomp/ and mount it on the container. For example, assuming you have a folder containing the nll configuration and OpenStreetMap maps on your Mac's hard drive in the directory /HOST/PATH/TO/seiscomp/share/, you can create and start a preconfigured container:
+You can create a "seiscomp" folder and mount it on the container. For example, assuming you have a folder containing the nll configuration and OpenStreetMap maps on your Mac's hard drive in the directory /HOST/PATH/TO/seiscomp/share/, you can create and start a preconfigured container:
 
 ```bash
 docker run -d -p 2222:22 \
