@@ -10,7 +10,6 @@ LABEL description="Docker image running SeisComP version 6 on Debian 12."
 ENV WORK_DIR=/home/sysop/
 ENV INSTALL_DIR=/opt/seiscomp
 ENV CFG_LOG_DIR=/home/sysop/.seiscomp
-ENV DATA_DIR=/opt/data
 # Set system to non-interactive during build only
 ARG DEBIAN_FRONTEND=noninteractive
 # NOT SURE IF USEFUL => ASK F. MASSIN
@@ -89,13 +88,11 @@ RUN groupadd --gid $GROUP_ID -r sysop \
 ## Directories
 
 RUN mkdir -p $CFG_LOG_DIR \
+    && mkdir $CFG_LOG_DIR/log \
     && chown -R sysop:sysop /home/sysop \
     && mkdir -p $INSTALL_DIR \
     && chown -R sysop:sysop $INSTALL_DIR \
-    && chmod g+w $INSTALL_DIR \
-    && mkdir -p $DATA_DIR \
-    && chown -R sysop:sysop $DATA_DIR \
-    && chmod g+w $DATA_DIR
+    && chmod g+w $INSTALL_DIR
 
 USER sysop
 
