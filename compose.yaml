@@ -6,7 +6,7 @@ services:
         ports:
             - "2224:22"
         volumes:
-            - $HOME/seiscomp-gui/cfg:/home/sysop/.seiscomp/:ro
+            - $HOME/seiscomp-gui/cfg:/home/sysop/.seiscomp:rw
             - $HOME/seiscomp-gui/maps:/opt/seiscomp/share/maps:ro
             - $HOME/seiscomp-gui/nll:/opt/seiscomp/share/nll:rw
             - $HOME/seiscomp-gui/hypo71:/opt/seiscomp/share/hypo71:rw
