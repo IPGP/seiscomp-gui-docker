@@ -48,6 +48,7 @@ RUN apt-get update \
         python3-humanize \
         python3-gnupg \
         python3-bs4 \
+        python3-venv \
         # Useful for X11 forwarding
         mesa-utils \
         libgl1-mesa-glx \
