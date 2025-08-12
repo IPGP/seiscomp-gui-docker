@@ -35,8 +35,11 @@ Typically, when using SeiSComP GUI, you would need :
  * directories containing travel time files for locators
 
 By default, configuration files are expected on `$HOME/seiscomp-gui/cfg` on the host computer. They are mounted on `$HOME/.seiscomp` in the container.
+
 By default, map tiles directory is expected on `$HOME/seiscomp-gui/maps` on the host computer. It is mounted on `/opt/seiscomp/share/maps` in the container.
+
 By default, NonLinLoc configuration and time travel files are expected on `$HOME/seiscomp-gui/nll` on the host computer. It is mounted on `/opt/seiscomp/share/nll` in the container.
+
 By default, Hypo71PC configuration files and velocity models are expected to be found on `$HOME/seiscomp-gui/hypo71` on the host computer. It is mounted on `/opt/seiscomp/share/hypo71` in the container.
 
 You can update the host path for each volume or comment the unused ones in the `compose.yaml` file, section `volumes`.
