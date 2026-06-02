@@ -101,7 +101,7 @@ USER sysop
 RUN wget https://data.gempa.de/gsm/gempa-gsm.tar.gz \
     && tar xvfz gempa-gsm.tar.gz 
 
-COPY gsm/gsm.conf gsm/
+COPY gsm/gsm.conf gsm/etc/
 
 ## Install SeisComP
 RUN rm -rf gsm/sync \
