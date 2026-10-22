@@ -1,8 +1,8 @@
-FROM debian:12-slim
+FROM debian:13-slim
 
 LABEL org.opencontainers.image.authors="boissier@ipgp.fr"
 LABEL version="1.0"
-LABEL description="Docker image running SeisComP version 6 on Debian 12."
+LABEL description="Docker image running SeisComP version 7 on Debian 13."
 
 ## Environment variables
 
@@ -35,32 +35,34 @@ RUN apt-get update \
         libssl-dev \
         net-tools \
         python3 \
-        libpython3.11 \
+        libpython3.13 \
         sudo \
         wget \
         vim \
         git \
         # Gempa gsm dependencies
-        python3-cryptography \
-        python3-requests \
-        python3-tqdm \
-        python3-natsort \
-        python3-humanize \
-        python3-gnupg \
-        python3-bs4 \
+        # python3-cryptography \
+        # python3-requests \
+        # python3-tqdm \
+        # python3-natsort \
+        # python3-humanize \
+        # python3-gnupg \
+        # python3-bs4 \
         python3-venv \
+        gnupg \
         # Useful for X11 forwarding
         mesa-utils \
-        libgl1-mesa-glx \
+        # libgl1-mesa-glx \
     # Cleanup
     && apt-get autoremove -y --purge \
     && apt-get clean 
 
 ## Setup ssh access
 
-RUN mkdir /var/run/sshd \
+# RUN mkdir /var/run/sshd \
     # Generate SSH host keys 
-    && ssh-keygen -A \
+    # && ssh-keygen -A \
+RUN ssh-keygen -A \
     && sed -i'' -e's/^#X11UseLocalhost yes$/X11UseLocalhost no/' /etc/ssh/sshd_config \
     && sed -i'' -e's/^#AllowAgentForwarding yes$/AllowAgentForwarding yes/' /etc/ssh/sshd_config \
     && sed -i'' -e's/^#PermitRootLogin prohibit-password$/PermitRootLogin yes/' /etc/ssh/sshd_config \
