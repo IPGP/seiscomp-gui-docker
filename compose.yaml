@@ -4,7 +4,7 @@ services:
         build: seiscomp-gui
         platform: linux/amd64 # for M1 users
         ports:
-            - "2224:22"
+            - "2222:22"
         volumes:
             - $HOME/seiscomp-gui/cfg:/home/sysop/.seiscomp:rw
             - $HOME/seiscomp-gui/maps:/opt/seiscomp/share/maps:ro
